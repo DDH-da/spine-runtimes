@@ -875,8 +875,8 @@ void SpineSprite::update_meshes(Ref<SpineSkeleton> skeleton_ref) {
 			auto *region = (spine::RegionAttachment *) attachment;
 
 			vertices->setSize(8, 0);
-			region->computeWorldVertices(*slot, *vertices, 0);
-			renderer_object = (SpineRendererObject *) ((spine::AtlasRegion *) region->getRegion())->page->texture;
+			region->computeWorldVertices(slot->getBone(), *vertices, 0);
+			renderer_object = (SpineRendererObject *) ((spine::AtlasRegion *) region->getRendererObject())->page->getRendererObject();
 			uvs = &region->getUVs();
 			indices = &statics.quad_indices;
 
@@ -890,7 +890,7 @@ void SpineSprite::update_meshes(Ref<SpineSkeleton> skeleton_ref) {
 
 			vertices->setSize(mesh->getWorldVerticesLength(), 0);
 			mesh->computeWorldVertices(*slot, *vertices);
-			renderer_object = (SpineRendererObject *) ((spine::AtlasRegion *) mesh->getRegion())->page->texture;
+			renderer_object = (SpineRendererObject *) ((spine::AtlasRegion *) mesh->getRendererObject())->page->getRendererObject();
 			uvs = &mesh->getUVs();
 			indices = &mesh->getTriangles();
 
@@ -1058,7 +1058,7 @@ void SpineSprite::draw() {
 			auto *region = (spine::RegionAttachment *) attachment;
 			auto *vertices = &statics.scratch_vertices;
 			vertices->setSize(8, 0);
-			region->computeWorldVertices(*slot, *vertices, 0);
+			region->computeWorldVertices(slot->getBone(), *vertices, 0);
 
 			// Render triangles.
 			createLinesFromMesh(statics.scratch_points, statics.quad_indices, vertices);

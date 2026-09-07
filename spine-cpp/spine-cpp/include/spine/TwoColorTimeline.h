@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,24 +27,54 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#ifndef Spine_TextureRegion_h
-#define Spine_TextureRegion_h
+#ifndef Spine_TwoColorTimeline_h
+#define Spine_TwoColorTimeline_h
 
-#include <spine/Vector.h>
+#include <spine/CurveTimeline.h>
 
 namespace spine {
-	class SP_API TextureRegion : public SpineObject {
-	public:
-		void *rendererObject;
-		float u, v, u2, v2;
-		int degrees;
-		float offsetX, offsetY;
-		int width, height;
-		int originalWidth, originalHeight;
 
-		TextureRegion(): rendererObject(NULL), u(0), v(0), u2(0), v2(0), degrees(0), offsetX(0), offsetY(0), width(0), height(0), originalWidth(0), originalHeight(0) {};
-		~TextureRegion() {};
+	class SP_API TwoColorTimeline : public CurveTimeline {
+		friend class SkeletonBinary;
+		friend class SkeletonJson;
+
+		RTTI_DECL
+
+	public:
+		static const int ENTRIES;
+
+		explicit TwoColorTimeline(int frameCount);
+
+		virtual void apply(Skeleton& skeleton, float lastTime, float time, Vector<Event*>* pEvents, float alpha, MixBlend blend, MixDirection direction);
+
+		virtual int getPropertyId();
+
+		/// Sets the time and value of the specified keyframe.
+		void setFrame(int frameIndex, float time, float r, float g, float b, float a, float r2, float g2, float b2);
+
+		int getSlotIndex();
+		void setSlotIndex(int inValue);
+
+	private:
+		static const int PREV_TIME;
+		static const int PREV_R;
+		static const int PREV_G;
+		static const int PREV_B;
+		static const int PREV_A;
+		static const int PREV_R2;
+		static const int PREV_G2;
+		static const int PREV_B2;
+		static const int R;
+		static const int G;
+		static const int B;
+		static const int A;
+		static const int R2;
+		static const int G2;
+		static const int B2;
+
+		Vector<float> _frames; // time, r, g, b, a, r2, g2, b2, ...
+		int _slotIndex;
 	};
 }
 
-#endif
+#endif /* Spine_TwoColorTimeline_h */

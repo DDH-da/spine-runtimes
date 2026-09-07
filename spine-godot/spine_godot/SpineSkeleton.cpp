@@ -30,10 +30,10 @@
 #include "SpineSkeleton.h"
 #include "SpineCommon.h"
 #include "SpineSprite.h"
-#include <spine/SkeletonClipping.h>
+// #include <spine/SkeletonClipping.h> // patched
 
 void SpineSkeleton::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("update_world_transform", "physics"), &SpineSkeleton::update_world_transform);
+	ClassDB::bind_method(D_METHOD("update_world_transform"), &SpineSkeleton::update_world_transform);
 	ClassDB::bind_method(D_METHOD("set_to_setup_pose"), &SpineSkeleton::set_to_setup_pose);
 	ClassDB::bind_method(D_METHOD("set_bones_to_setup_pose"), &SpineSkeleton::set_bones_to_setup_pose);
 	ClassDB::bind_method(D_METHOD("set_slots_to_setup_pose"), &SpineSkeleton::set_slots_to_setup_pose);
@@ -224,8 +224,8 @@ Ref<SpinePhysicsConstraint> SpineSkeleton::find_physics_constraint(const String 
 Rect2 SpineSkeleton::get_bounds() {
 	SPINE_CHECK(skeleton, Rect2(0, 0, 0, 0))
 	float x, y, w, h;
-	spine::SkeletonClipping clipper;
-	skeleton->getBounds(x, y, w, h, bounds_vertex_buffer, &clipper);
+	// patched: Spine 3.8 getBounds doesn't take clipper
+	skeleton->getBounds(x, y, w, h, bounds_vertex_buffer);
 	return Rect2(x, y, w, h);
 }
 

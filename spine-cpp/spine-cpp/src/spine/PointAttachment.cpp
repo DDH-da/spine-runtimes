@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,6 +27,10 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+#ifdef SPINE_UE4
+#include "SpinePluginPrivatePCH.h"
+#endif
+
 #include <spine/PointAttachment.h>
 
 #include <spine/Bone.h>
@@ -37,7 +41,7 @@ using namespace spine;
 
 RTTI_IMPL(PointAttachment, Attachment)
 
-PointAttachment::PointAttachment(const String &name) : Attachment(name), _x(0), _y(0), _rotation(0), _color() {
+PointAttachment::PointAttachment(const String &name) : Attachment(name), _x(0), _y(0), _rotation(0) {
 }
 
 void PointAttachment::computeWorldPosition(Bone &bone, float &ox, float &oy) {
@@ -45,10 +49,12 @@ void PointAttachment::computeWorldPosition(Bone &bone, float &ox, float &oy) {
 }
 
 float PointAttachment::computeWorldRotation(Bone &bone) {
-	float r = _rotation * MathUtil::Deg_Rad, cosine = MathUtil::cos(r), sine = MathUtil::sin(r);
-	float x = cosine * bone._a + sine * bone._b;
-	float y = cosine * bone._c + sine * bone._d;
-	return MathUtil::atan2Deg(y, x);
+	float cos = MathUtil::cosDeg(_rotation);
+	float sin = MathUtil::sinDeg(_rotation);
+	float ix = cos * bone._a + sin * bone._b;
+	float iy = cos * bone._c + sin * bone._d;
+
+	return MathUtil::atan2(iy, ix) * MathUtil::Rad_Deg;
 }
 
 float PointAttachment::getX() {
@@ -75,12 +81,8 @@ void PointAttachment::setRotation(float inValue) {
 	_rotation = inValue;
 }
 
-Color &PointAttachment::getColor() {
-	return _color;
-}
-
-Attachment *PointAttachment::copy() {
-	PointAttachment *copy = new (__FILE__, __LINE__) PointAttachment(getName());
+Attachment* PointAttachment::copy() {
+	PointAttachment* copy = new(__FILE__, __LINE__) PointAttachment(getName());
 	copy->_x = _x;
 	copy->_y = _y;
 	copy->_rotation = _rotation;

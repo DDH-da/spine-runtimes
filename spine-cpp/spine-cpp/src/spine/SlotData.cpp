@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,21 +27,25 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
+#ifdef SPINE_UE4
+#include "SpinePluginPrivatePCH.h"
+#endif
+
 #include <spine/SlotData.h>
 
 #include <assert.h>
 
 using namespace spine;
 
-SlotData::SlotData(int index, const String &name, BoneData &boneData) : _index(index),
-																		_name(name),
-																		_boneData(boneData),
-																		_color(1, 1, 1, 1),
-																		_darkColor(0, 0, 0, 0),
-																		_hasDarkColor(false),
-																		_attachmentName(),
-																		_blendMode(BlendMode_Normal),
-																		_visible(true) {
+SlotData::SlotData(int index, const String &name, BoneData &boneData) :
+		_index(index),
+		_name(name),
+		_boneData(boneData),
+		_color(1, 1, 1, 1),
+		_darkColor(0, 0, 0, 0),
+		_hasDarkColor(false),
+		_attachmentName(),
+		_blendMode(BlendMode_Normal) {
 	assert(_index >= 0);
 	assert(_name.length() > 0);
 }
@@ -88,12 +92,4 @@ BlendMode SlotData::getBlendMode() {
 
 void SlotData::setBlendMode(BlendMode inValue) {
 	_blendMode = inValue;
-}
-
-bool SlotData::isVisible() {
-	return _visible;
-}
-
-void SlotData::setVisible(bool inValue) {
-	this->_visible = inValue;
 }

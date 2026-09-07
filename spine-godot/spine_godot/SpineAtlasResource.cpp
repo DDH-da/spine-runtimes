@@ -167,7 +167,7 @@ public:
 			renderer_object->texture = Ref<Texture>(nullptr);
 			renderer_object->normal_map = Ref<Texture>(nullptr);
 			renderer_object->specular_map = Ref<Texture>(nullptr);
-			page.texture = (void *) renderer_object;
+			page.setRendererObject((void *) renderer_object);
 			return;
 		}
 
@@ -218,7 +218,7 @@ public:
 		renderer_object->canvas_texture->set_specular_texture(renderer_object->specular_map);
 #endif
 
-		page.texture = (void *) renderer_object;
+		page.setRendererObject((void *) renderer_object);
 		page.width = texture->get_width();
 		page.height = texture->get_height();
 	}

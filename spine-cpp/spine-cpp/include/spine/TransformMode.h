@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,45 +27,17 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#ifndef Spine_InheritTimeline_h
-#define Spine_InheritTimeline_h
-
-#include <spine/Timeline.h>
-
-#include <spine/Animation.h>
-#include <spine/Property.h>
-#include <spine/Inherit.h>
+#ifndef Spine_TransformMode_h
+#define Spine_TransformMode_h
 
 namespace spine {
-
-	class SP_API InheritTimeline : public Timeline {
-		friend class SkeletonBinary;
-
-		friend class SkeletonJson;
-
-	RTTI_DECL
-
-	public:
-		explicit InheritTimeline(size_t frameCount, int boneIndex);
-
-		virtual ~InheritTimeline();
-
-        void setFrame(int frame, float time, Inherit inherit);
-
-		virtual void
-		apply(Skeleton &skeleton, float lastTime, float time, Vector<Event *> *pEvents, float alpha, MixBlend blend,
-			  MixDirection direction);
-
-		int getBoneIndex() { return _boneIndex; }
-
-		void setBoneIndex(int inValue) { _boneIndex = inValue; }
-
-	private:
-		int _boneIndex;
-
-        static const int ENTRIES = 2;
-        static const int INHERIT = 1;
+	enum TransformMode {
+		TransformMode_Normal = 0,
+		TransformMode_OnlyTranslation,
+		TransformMode_NoRotationOrReflection,
+		TransformMode_NoScale,
+		TransformMode_NoScaleOrReflection
 	};
 }
 
-#endif /* Spine_InheritTimeline_h */
+#endif /* Spine_TransformMode_h */

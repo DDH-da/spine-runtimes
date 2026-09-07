@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -27,72 +27,79 @@
  * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#ifndef Spine_Sequence_h
-#define Spine_Sequence_h
+#ifndef Spine_VertexEffect_h
+#define Spine_VertexEffect_h
 
-#include <spine/Vector.h>
-#include <spine/SpineString.h>
-#include <spine/TextureRegion.h>
+#include <spine/SpineObject.h>
+#include <spine/MathUtil.h>
 
 namespace spine {
-	class Slot;
 
-	class Attachment;
+class Skeleton;
+class Color;
 
-	class SkeletonBinary;
-	class SkeletonJson;
+class SP_API VertexEffect: public SpineObject {
+public:
+	virtual void begin(Skeleton& skeleton) = 0;
+	virtual void transform(float& x, float& y, float &u, float &v, Color &light, Color &dark) = 0;
+	virtual void end() = 0;
+};
 
-	class SP_API Sequence : public SpineObject {
-		friend class SkeletonBinary;
-		friend class SkeletonJson;
-	public:
-		Sequence(int count);
+class SP_API JitterVertexEffect: public VertexEffect {
+public:
+	JitterVertexEffect(float jitterX, float jitterY);
 
-		~Sequence();
+	void begin(Skeleton& skeleton);
+	void transform(float& x, float& y, float &u, float &v, Color &light, Color &dark);
+	void end();
 
-		Sequence *copy();
+	void setJitterX(float jitterX);
+	float getJitterX();
 
-		void apply(Slot *slot, Attachment *attachment);
+	void setJitterY(float jitterY);
+	float getJitterY();
 
-		String getPath(const String &basePath, int index);
+protected:
+	float _jitterX;
+	float _jitterY;
+};
 
-		int getId() { return _id; }
+class SP_API SwirlVertexEffect: public VertexEffect {
+public:
+	SwirlVertexEffect(float radius, Interpolation &interpolation);
 
-		void setId(int id) { _id = id; }
+	void begin(Skeleton& skeleton);
+	void transform(float& x, float& y, float &u, float &v, Color &light, Color &dark);
+	void end();
 
-		int getStart() { return _start; }
+	void setCenterX(float centerX);
+	float getCenterX();
 
-		void setStart(int start) { _start = start; }
+	void setCenterY(float centerY);
+	float getCenterY();
 
-		int getDigits() { return _digits; }
+	void setRadius(float radius);
+	float getRadius();
 
-		void setDigits(int digits) { _digits = digits; }
+	void setAngle(float angle);
+	float getAngle();
 
-		int getSetupIndex() { return _setupIndex; }
+	void setWorldX(float worldX);
+	float getWorldX();
 
-		void setSetupIndex(int setupIndex) { _setupIndex = setupIndex; }
+	void setWorldY(float worldY);
+	float getWorldY();
 
-		Vector<TextureRegion *> &getRegions() { return _regions; }
+protected:
+	float _centerX;
+	float _centerY;
+	float _radius;
+	float _angle;
+	float _worldX;
+	float _worldY;
 
-	private:
-		int _id;
-		Vector<TextureRegion *> _regions;
-		int _start;
-		int _digits;
-		int _setupIndex;
-
-		int getNextID();
-	};
-
-	enum SequenceMode {
-		hold = 0,
-		once = 1,
-		loop = 2,
-		pingpong = 3,
-		onceReverse = 4,
-		loopReverse = 5,
-		pingpongReverse = 6
-	};
+	Interpolation& _interpolation;
+};
 }
 
-#endif
+#endif /* Spine_VertexEffect_h */

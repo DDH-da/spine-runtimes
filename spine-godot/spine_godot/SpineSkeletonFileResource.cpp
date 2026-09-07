@@ -98,9 +98,9 @@ void SpineSkeletonFileResource::_bind_methods() {
 }
 
 static bool checkVersion(const char *version) {
+	// patched: accept Spine 3.8.x data
 	if (!version) return false;
-	char *result = (char *) (strstr(version, SPINE_VERSION_STRING) - version);
-	return result == 0;
+	return strstr(version, "3.8") != NULL;
 }
 
 static bool checkJson(const char *jsonData) {
@@ -117,8 +117,9 @@ static bool checkBinary(const char *binaryData, int length) {
 	BinaryInput input;
 	input.cursor = (const unsigned char *) binaryData;
 	input.end = (const unsigned char *) binaryData + length;
-	// Skip hash
-	input.cursor += 8;
+	// patched: Spine 3.8 stores hash as length-prefixed string
+	char *hash = readString(&input);
+	if (hash) spine::SpineExtension::free(hash, __FILE__, __LINE__);
 	char *version = readString(&input);
 	bool result = checkVersion(version);
 	spine::SpineExtension::free(version, __FILE__, __LINE__);
