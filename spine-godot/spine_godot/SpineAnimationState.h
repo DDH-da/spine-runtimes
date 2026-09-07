@@ -78,7 +78,4 @@ public:
 
 	void set_time_scale(float time_scale);
 
-	void disable_queue();
-
-	void enable_queue();
 };

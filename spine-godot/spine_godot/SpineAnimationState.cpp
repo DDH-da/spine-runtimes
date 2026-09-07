@@ -44,8 +44,6 @@ void SpineAnimationState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_current", "track_id"), &SpineAnimationState::get_current);
 	ClassDB::bind_method(D_METHOD("get_time_scale"), &SpineAnimationState::get_time_scale);
 	ClassDB::bind_method(D_METHOD("set_time_scale", "time_scale"), &SpineAnimationState::set_time_scale);
-	ClassDB::bind_method(D_METHOD("disable_queue"), &SpineAnimationState::disable_queue);
-	ClassDB::bind_method(D_METHOD("enable_queue"), &SpineAnimationState::enable_queue);
 }
 
 SpineAnimationState::SpineAnimationState() : animation_state(nullptr), sprite(nullptr) {
@@ -158,14 +156,4 @@ float SpineAnimationState::get_time_scale() {
 void SpineAnimationState::set_time_scale(float time_scale) {
 	SPINE_CHECK(animation_state, )
 	animation_state->setTimeScale(time_scale);
-}
-
-void SpineAnimationState::disable_queue() {
-	SPINE_CHECK(animation_state, )
-	animation_state->disableQueue();
-}
-
-void SpineAnimationState::enable_queue() {
-	SPINE_CHECK(animation_state, )
-	animation_state->enableQueue();
 }
