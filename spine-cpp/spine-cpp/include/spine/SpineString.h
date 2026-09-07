@@ -38,7 +38,7 @@
 
 namespace spine {
 
-class SPINE_API SpineString : public SpineObject {
+class SpineString : public SpineObject {
 public:
 	SpineString() : _data("") {}
 
