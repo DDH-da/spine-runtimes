@@ -1,8 +1,8 @@
 /******************************************************************************
  * Spine Runtimes License Agreement
- * Last updated April 5, 2025. Replaces all prior versions.
+ * Last updated January 1, 2020. Replaces all prior versions.
  *
- * Copyright (c) 2013-2025, Esoteric Software LLC
+ * Copyright (c) 2013-2020, Esoteric Software LLC
  *
  * Integration of the Spine Runtimes into software or otherwise creating
  * derivative works of the Spine Runtimes is permitted under the terms and
@@ -20,116 +20,197 @@
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL ESOTERIC SOFTWARE LLC BE LIABLE FOR ANY
  * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES,
- * BUSINESS INTERRUPTION, OR LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * BUSINESS INTERRUPTION, LOSS OF USE, DATA, OR PROFITS) HOWEVER CAUSED AND
  * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THE
- * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THE SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-#pragma once
+#ifndef SPINE_STRING_H
+#define SPINE_STRING_H
 
-#include <spine/Extension.h>
 #include <spine/SpineObject.h>
-#include <spine/dll.h>
+#include <spine/Extension.h>
 
-#include <cstring>
-#include <string>
+#include <string.h>
+#include <stdio.h>
+
+// Required for sprintf on MSVC
+#ifdef _MSC_VER
+#pragma warning(disable:4996)
+#endif
 
 namespace spine {
-
-class SpineString : public SpineObject {
+class SP_API String : public SpineObject {
 public:
-	SpineString() : _data("") {}
-
-	SpineString(const char *chars) : _data(chars ? chars : "") {}
-
-	SpineString(const char *chars, size_t length) : _data(chars ? std::string(chars, length) : "") {}
-
-	SpineString(const std::string &other) : _data(other) {}
-
-	SpineString(const SpineString &other) : _data(other._data) {}
-
-	SpineString(SpineString &&other) noexcept : _data(std::move(other._data)) {}
-
-	~SpineString() {}
-
-	SpineString &operator=(const char *chars) {
-		_data = chars ? chars : "";
-		return *this;
+	String() : _length(0), _buffer(NULL) {
 	}
 
-	SpineString &operator=(const std::string &other) {
-		_data = other;
-		return *this;
+	String(const char *chars, bool own = false) {
+		if (!chars) {
+			_length = 0;
+			_buffer = NULL;
+		} else {
+			_length = strlen(chars);
+			if (!own) {
+				_buffer = SpineExtension::calloc<char>(_length + 1, __FILE__, __LINE__);
+				memcpy((void *) _buffer, chars, _length + 1);
+			} else {
+				_buffer = (char *) chars;
+			}
+		}
 	}
 
-	SpineString &operator=(const SpineString &other) {
-		_data = other._data;
-		return *this;
-	}
-
-	SpineString &operator=(SpineString &&other) noexcept {
-		_data = std::move(other._data);
-		return *this;
-	}
-
-	bool operator==(const char *chars) const {
-		if (!chars) return _data.empty();
-		return _data == chars;
-	}
-
-	bool operator==(const std::string &other) const {
-		return _data == other;
-	}
-
-	bool operator==(const SpineString &other) const {
-		return _data == other._data;
-	}
-
-	bool operator!=(const char *chars) const {
-		return !(*this == chars);
-	}
-
-	bool operator!=(const std::string &other) const {
-		return _data != other;
-	}
-
-	bool operator!=(const SpineString &other) const {
-		return _data != other._data;
-	}
-
-	bool operator<(const SpineString &other) const {
-		return _data < other._data;
-	}
-
-	SpineString operator+(const SpineString &other) const {
-		return SpineString(_data + other._data);
-	}
-
-	SpineString &operator+=(const SpineString &other) {
-		_data += other._data;
-		return *this;
-	}
-
-	operator const std::string &() const {
-		return _data;
-	}
-
-	const char *buffer() const {
-		return _data.c_str();
+	String(const String &other) {
+		if (!other._buffer) {
+			_length = 0;
+			_buffer = NULL;
+		} else {
+			_length = other._length;
+			_buffer = SpineExtension::calloc<char>(other._length + 1, __FILE__, __LINE__);
+			memcpy((void *) _buffer, other._buffer, other._length + 1);
+		}
 	}
 
 	size_t length() const {
-		return _data.length();
+		return _length;
 	}
 
-	bool empty() const {
-		return _data.empty();
+	bool isEmpty() const {
+		return _length == 0;
+	}
+
+	const char *buffer() const {
+		return _buffer;
+	}
+
+	void own(const String &other) {
+		if (this == &other) return;
+		if (_buffer) {
+			SpineExtension::free(_buffer, __FILE__, __LINE__);
+		}
+		_length = other._length;
+		_buffer = other._buffer;
+		other._length = 0;
+		other._buffer = NULL;
+	}
+
+	void own(const char *chars) {
+		if (_buffer == chars) return;
+		if (_buffer) {
+			SpineExtension::free(_buffer, __FILE__, __LINE__);
+		}
+
+		if (!chars) {
+			_length = 0;
+			_buffer = NULL;
+		} else {
+			_length = strlen(chars);
+			_buffer = (char *) chars;
+		}
+	}
+
+	void unown() {
+		_length = 0;
+		_buffer = NULL;
+	}
+
+	String &operator=(const String &other) {
+		if (this == &other) return *this;
+		if (_buffer) {
+			SpineExtension::free(_buffer, __FILE__, __LINE__);
+		}
+		if (!other._buffer) {
+			_length = 0;
+			_buffer = NULL;
+		} else {
+			_length = other._length;
+			_buffer = SpineExtension::calloc<char>(other._length + 1, __FILE__, __LINE__);
+			memcpy((void *) _buffer, other._buffer, other._length + 1);
+		}
+		return *this;
+	}
+
+	String &operator=(const char *chars) {
+		if (_buffer == chars) return *this;
+		if (_buffer) {
+			SpineExtension::free(_buffer, __FILE__, __LINE__);
+		}
+		if (!chars) {
+			_length = 0;
+			_buffer = NULL;
+		} else {
+			_length = strlen(chars);
+			_buffer = SpineExtension::calloc<char>(_length + 1, __FILE__, __LINE__);
+			memcpy((void *) _buffer, chars, _length + 1);
+		}
+		return *this;
+	}
+
+	String &append(const char *chars) {
+		size_t len = strlen(chars);
+		size_t thisLen = _length;
+		_length = _length + len;
+		bool same = chars == _buffer;
+		_buffer = SpineExtension::realloc(_buffer, _length + 1, __FILE__, __LINE__);
+		memcpy((void *) (_buffer + thisLen), (void *) (same ? _buffer : chars), len + 1);
+		return *this;
+	}
+
+	String &append(const String &other) {
+		size_t len = other.length();
+		size_t thisLen = _length;
+		_length = _length + len;
+		bool same = other._buffer == _buffer;
+		_buffer = SpineExtension::realloc(_buffer, _length + 1, __FILE__, __LINE__);
+		memcpy((void *) (_buffer + thisLen), (void *) (same ? _buffer : other._buffer), len + 1);
+		return *this;
+	}
+
+	String &append(int other) {
+		char str[100];
+		sprintf(str, "%i", other);
+		append(str);
+		return *this;
+	}
+
+	String &append(float other) {
+		char str[100];
+		sprintf(str, "%f", other);
+		append(str);
+		return *this;
+	}
+
+	friend bool operator==(const String &a, const String &b) {
+		if (a._buffer == b._buffer) return true;
+		if (a._length != b._length) return false;
+		if (a._buffer && b._buffer) {
+			return strcmp(a._buffer, b._buffer) == 0;
+		} else {
+			return false;
+		}
+	}
+
+	friend bool operator!=(const String &a, const String &b) {
+		return !(a == b);
+	}
+
+	~String() {
+		if (_buffer) {
+			SpineExtension::free(_buffer, __FILE__, __LINE__);
+		}
 	}
 
 private:
-	std::string _data;
+	mutable size_t _length;
+	mutable char *_buffer;
 };
 
+// Alias for compatibility with 4.x spine-godot code that uses SpineString
+typedef String SpineString;
+
 } // namespace spine
+
+
+#endif //SPINE_STRING_H

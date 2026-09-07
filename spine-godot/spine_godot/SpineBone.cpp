@@ -122,7 +122,14 @@ Vector2 SpineBone::world_to_local(Vector2 world_position) {
 Vector2 SpineBone::world_to_parent(Vector2 world_position) {
 	SPINE_CHECK(get_spine_object(), Vector2())
 	float x, y;
-	get_spine_object()->worldToParent(world_position.x, world_position.y, x, y);
+	// 3.8: use worldToLocal as fallback (worldToParent doesn't exist)
+	spine::Bone *bone = get_spine_object();
+	if (bone->getParent()) {
+		bone->getParent()->worldToLocal(world_position.x, world_position.y, x, y);
+	} else {
+		x = world_position.x;
+		y = world_position.y;
+	}
 	return Vector2(x, y);
 }
 

@@ -57,7 +57,6 @@ void SpineConstant::_bind_methods() {
 	BIND_ENUM_CONSTANT(Property_PathConstraintPosition)
 	BIND_ENUM_CONSTANT(Property_PathConstraintSpacing)
 	BIND_ENUM_CONSTANT(Property_PathConstraintMix)
-	BIND_ENUM_CONSTANT(Property_Sequence)
 
 	BIND_ENUM_CONSTANT(Inherit_Normal)
 	BIND_ENUM_CONSTANT(Inherit_OnlyTranslation)
@@ -82,14 +81,8 @@ void SpineConstant::_bind_methods() {
 	BIND_ENUM_CONSTANT(BlendMode_Screen)
 
 	BIND_ENUM_CONSTANT(UpdateMode_Process)
-	BIND_ENUM_CONSTANT(UpdateMode_Physics)
 	BIND_ENUM_CONSTANT(UpdateMode_Manual)
 
 	BIND_ENUM_CONSTANT(BoneMode_Follow)
 	BIND_ENUM_CONSTANT(BoneMode_Drive)
-
-	BIND_ENUM_CONSTANT(Physics_None);
-	BIND_ENUM_CONSTANT(Physics_Reset);
-	BIND_ENUM_CONSTANT(Physics_Update);
-	BIND_ENUM_CONSTANT(Physics_Pose);
 }

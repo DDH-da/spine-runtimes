@@ -43,7 +43,6 @@
 #endif
 #endif
 #include <spine/Json.h>
-#include <spine/Version.h>
 #include <spine/Extension.h>
 
 

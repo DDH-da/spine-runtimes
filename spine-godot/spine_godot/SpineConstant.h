@@ -69,8 +69,7 @@ public:
 		Property_TransformConstraint = 1 << 15,
 		Property_PathConstraintPosition = 1 << 16,
 		Property_PathConstraintSpacing = 1 << 17,
-		Property_PathConstraintMix = 1 << 18,
-		Property_Sequence = 1 << 19
+		Property_PathConstraintMix = 1 << 18
 	};
 
 	enum Inherit {
@@ -107,7 +106,6 @@ public:
 
 	enum UpdateMode {
 		UpdateMode_Process,
-		UpdateMode_Physics,
 		UpdateMode_Manual
 	};
 
@@ -116,12 +114,6 @@ public:
 		BoneMode_Drive
 	};
 
-	enum Physics {
-		Physics_None,
-		Physics_Reset,
-		Physics_Update,
-		Physics_Pose
-	};
 };
 
 VARIANT_ENUM_CAST(SpineConstant::MixBlend)
@@ -134,4 +126,3 @@ VARIANT_ENUM_CAST(SpineConstant::RotateMode)
 VARIANT_ENUM_CAST(SpineConstant::BlendMode)
 VARIANT_ENUM_CAST(SpineConstant::UpdateMode)
 VARIANT_ENUM_CAST(SpineConstant::BoneMode)
-VARIANT_ENUM_CAST(SpineConstant::Physics)

@@ -55,7 +55,7 @@ void SpineTransformConstraint::_bind_methods() {
 
 void SpineTransformConstraint::update() {
 	SPINE_CHECK(get_spine_object(), )
-	get_spine_object()->update(spine::Physics_Update);
+	get_spine_object()->update();
 }
 
 int SpineTransformConstraint::get_order() {

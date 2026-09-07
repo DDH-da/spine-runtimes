@@ -36,7 +36,6 @@
 #include "SpineIkConstraint.h"
 #include "SpineTransformConstraint.h"
 #include "SpinePathConstraint.h"
-#include "SpinePhysicsConstraint.h"
 
 #include <unordered_map>
 
@@ -76,7 +75,7 @@ public:
 	SpineSkeleton();
 	~SpineSkeleton() override;
 
-	void update_world_transform(SpineConstant::Physics physics);
+	void update_world_transform();
 
 	void set_to_setup_pose();
 
@@ -104,8 +103,6 @@ public:
 
 	Ref<SpinePathConstraint> find_path_constraint(const String &constraint_name);
 
-	Ref<SpinePhysicsConstraint> find_physics_constraint(const String &constraint_name);
-
 	Rect2 get_bounds();
 
 	Ref<SpineBone> get_root_bone();
@@ -121,8 +118,6 @@ public:
 	Array get_transform_constraints();
 
 	Array get_path_constraints();
-
-	Array get_physics_constraints();
 
 	Ref<SpineSkin> get_skin();
 
@@ -154,7 +149,4 @@ public:
 
 	void update(float delta);
 
-	void physics_translate(float x, float y);
-
-	void physics_rotate(float x, float y, float degrees);
 };

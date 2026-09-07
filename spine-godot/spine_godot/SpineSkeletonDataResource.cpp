@@ -130,8 +130,6 @@ void SpineSkeletonDataResource::_bind_methods() {
 			&SpineSkeletonDataResource::find_transform_constraint);
 	ClassDB::bind_method(D_METHOD("find_path_constraint_data", "constraint_name"),
 						 &SpineSkeletonDataResource::find_path_constraint);
-	ClassDB::bind_method(D_METHOD("find_physics_constraint_data", "constraint_name"),
-						 &SpineSkeletonDataResource::find_physics_constraint);
 	ClassDB::bind_method(D_METHOD("get_skeleton_name"),
 						 &SpineSkeletonDataResource::get_skeleton_name);
 	ClassDB::bind_method(D_METHOD("get_bones"),
@@ -154,8 +152,6 @@ void SpineSkeletonDataResource::_bind_methods() {
 						 &SpineSkeletonDataResource::get_transform_constraints);
 	ClassDB::bind_method(D_METHOD("get_path_constraints"),
 						 &SpineSkeletonDataResource::get_path_constraints);
-	ClassDB::bind_method(D_METHOD("get_physics_constraints"),
-						 &SpineSkeletonDataResource::get_physics_constraints);
 	ClassDB::bind_method(D_METHOD("get_x"), &SpineSkeletonDataResource::get_x);
 	ClassDB::bind_method(D_METHOD("get_y"), &SpineSkeletonDataResource::get_y);
 	ClassDB::bind_method(D_METHOD("get_width"),
@@ -172,10 +168,6 @@ void SpineSkeletonDataResource::_bind_methods() {
 						 &SpineSkeletonDataResource::get_audio_path);
 	ClassDB::bind_method(D_METHOD("get_fps"),
 						 &SpineSkeletonDataResource::get_fps);
-	ClassDB::bind_method(D_METHOD("get_reference_scale"),
-						 &SpineSkeletonDataResource::get_reference_scale);
-	ClassDB::bind_method(D_METHOD("set_reference_scale", "reference_scale"),
-						 &SpineSkeletonDataResource::set_reference_scale);
 	ClassDB::bind_method(D_METHOD("update_skeleton_data"),
 						 &SpineSkeletonDataResource::update_skeleton_data);
 
@@ -635,22 +627,6 @@ Ref<SpinePathConstraintData> SpineSkeletonDataResource::find_path_constraint(
 	return constraint_ref;
 }
 
-Ref<SpinePhysicsConstraintData>
-SpineSkeletonDataResource::find_physics_constraint(
-		const String &constraint_name) const {
-	SPINE_CHECK(skeleton_data, nullptr)
-	if (EMPTY(constraint_name))
-		return nullptr;
-	auto constraint =
-			skeleton_data->findPhysicsConstraint(SPINE_STRING_TMP(constraint_name));
-	if (constraint == nullptr)
-		return nullptr;
-	Ref<SpinePhysicsConstraintData> constraint_ref(
-			memnew(SpinePhysicsConstraintData));
-	constraint_ref->set_spine_object(this, constraint);
-	return constraint_ref;
-}
-
 String SpineSkeletonDataResource::get_skeleton_name() const {
 	SPINE_CHECK(skeleton_data, "")
 	String name;
@@ -785,20 +761,6 @@ Array SpineSkeletonDataResource::get_path_constraints() const {
 	return result;
 }
 
-Array SpineSkeletonDataResource::get_physics_constraints() const {
-	Array result;
-	SPINE_CHECK(skeleton_data, result)
-	auto constraints = skeleton_data->getPhysicsConstraints();
-	result.resize((int) constraints.size());
-	for (int i = 0; i < constraints.size(); ++i) {
-		Ref<SpinePhysicsConstraintData> constraint_ref(
-				memnew(SpinePhysicsConstraintData));
-		constraint_ref->set_spine_object(this, constraints[i]);
-		result[i] = constraint_ref;
-	}
-	return result;
-}
-
 float SpineSkeletonDataResource::get_x() const {
 	SPINE_CHECK(skeleton_data, 0)
 	return skeleton_data->getX();
@@ -842,14 +804,4 @@ String SpineSkeletonDataResource::get_audio_path() const {
 float SpineSkeletonDataResource::get_fps() const {
 	SPINE_CHECK(skeleton_data, 0)
 	return skeleton_data->getFps();
-}
-
-float SpineSkeletonDataResource::get_reference_scale() const {
-	SPINE_CHECK(skeleton_data, 100);
-	return skeleton_data->getReferenceScale();
-}
-
-void SpineSkeletonDataResource::set_reference_scale(float reference_scale) {
-	SPINE_CHECK(skeleton_data, )
-	skeleton_data->setReferenceScale(reference_scale);
 }

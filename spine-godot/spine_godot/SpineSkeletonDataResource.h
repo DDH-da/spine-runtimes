@@ -35,7 +35,6 @@
 #include "SpineEventData.h"
 #include "SpineIkConstraintData.h"
 #include "SpinePathConstraintData.h"
-#include "SpinePhysicsConstraintData.h"
 #include "SpineSkeletonFileResource.h"
 #include "SpineSkin.h"
 #include "SpineSlotData.h"
@@ -165,9 +164,6 @@ public:
 	Ref<SpinePathConstraintData>
 	find_path_constraint(const String &constraint_name) const;
 
-	Ref<SpinePhysicsConstraintData>
-	find_physics_constraint(const String &constraint_name) const;
-
 	String get_skeleton_name() const;
 
 	Array get_bones() const;
@@ -190,8 +186,6 @@ public:
 
 	Array get_path_constraints() const;
 
-	Array get_physics_constraints() const;
-
 	float get_x() const;
 
 	float get_y() const;
@@ -209,10 +203,6 @@ public:
 	String get_audio_path() const;
 
 	float get_fps() const;
-
-	float get_reference_scale() const;
-
-	void set_reference_scale(float reference_scale);
 
 #ifdef TOOLS_ENABLED
 #if VERSION_MAJOR > 3

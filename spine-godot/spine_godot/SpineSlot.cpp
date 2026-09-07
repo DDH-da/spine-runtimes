@@ -48,8 +48,6 @@ void SpineSlot::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_attachment_state", "v"), &SpineSlot::set_attachment_state);
 	ClassDB::bind_method(D_METHOD("get_deform"), &SpineSlot::get_deform);
 	ClassDB::bind_method(D_METHOD("set_deform", "v"), &SpineSlot::set_deform);
-	ClassDB::bind_method(D_METHOD("get_sequence_index"), &SpineSlot::get_sequence_index);
-	ClassDB::bind_method(D_METHOD("set_sequence_index", "v"), &SpineSlot::set_sequence_index);
 }
 
 void SpineSlot::set_to_setup_pose() {
@@ -154,14 +152,4 @@ void SpineSlot::set_deform(Array v) {
 	for (int i = 0; i < v.size(); ++i) {
 		deform[i] = v[i];
 	}
-}
-
-int SpineSlot::get_sequence_index() {
-	SPINE_CHECK(get_spine_object(), 0)
-	return get_spine_object()->getAttachmentState();
-}
-
-void SpineSlot::set_sequence_index(int v) {
-	SPINE_CHECK(get_spine_object(), )
-	get_spine_object()->setAttachmentState(v);
 }

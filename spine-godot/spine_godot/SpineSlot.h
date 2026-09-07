@@ -75,8 +75,4 @@ public:
 	Array get_deform();
 
 	void set_deform(Array v);
-
-	int get_sequence_index();
-
-	void set_sequence_index(int v);
 };
