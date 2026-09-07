@@ -61,10 +61,6 @@ public:
 
 	void set_reverse(bool v);
 
-	bool get_shortest_rotation();
-
-	void set_shortest_rotation(bool v);
-
 	float get_delay();
 
 	void set_delay(float v);
@@ -103,17 +99,13 @@ public:
 
 	void set_event_threshold(float v);
 
-	float get_mix_attachment_threshold();
+	float get_attachment_threshold();
 
-	void set_mix_attachment_threshold(float v);
+	void set_attachment_threshold(float v);
 
-	float get_mix_draw_order_threshold();
+	float get_draw_order_threshold();
 
-	void set_mix_draw_order_threshold(float v);
-
-	float get_alpha_attachment_threshold();
-
-	void set_alpha_attachment_threshold(float v);
+	void set_draw_order_threshold(float v);
 
 	Ref<SpineTrackEntry> get_next();
 

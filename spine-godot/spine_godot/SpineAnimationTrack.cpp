@@ -63,16 +63,14 @@ void SpineAnimationTrack::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_hold_previous"), &SpineAnimationTrack::get_hold_previous);
 	ClassDB::bind_method(D_METHOD("set_reverse", "reverse"), &SpineAnimationTrack::set_reverse);
 	ClassDB::bind_method(D_METHOD("get_reverse"), &SpineAnimationTrack::get_reverse);
-	ClassDB::bind_method(D_METHOD("set_shortest_rotation", "shortest_rotation"), &SpineAnimationTrack::set_shortest_rotation);
-	ClassDB::bind_method(D_METHOD("get_shortest_rotation"), &SpineAnimationTrack::get_shortest_rotation);
 	ClassDB::bind_method(D_METHOD("set_time_scale", "time_scale"), &SpineAnimationTrack::set_time_scale);
 	ClassDB::bind_method(D_METHOD("get_time_scale"), &SpineAnimationTrack::get_time_scale);
 	ClassDB::bind_method(D_METHOD("set_alpha", "alpha"), &SpineAnimationTrack::set_alpha);
 	ClassDB::bind_method(D_METHOD("get_alpha"), &SpineAnimationTrack::get_alpha);
-	ClassDB::bind_method(D_METHOD("set_mix_attachment_threshold", "mix_attachment_threshold"), &SpineAnimationTrack::set_mix_attachment_threshold);
-	ClassDB::bind_method(D_METHOD("get_mix_attachment_threshold"), &SpineAnimationTrack::get_mix_attachment_threshold);
-	ClassDB::bind_method(D_METHOD("set_mix_draw_order_threshold", "mix_draw_order_threshold"), &SpineAnimationTrack::set_mix_draw_order_threshold);
-	ClassDB::bind_method(D_METHOD("get_mix_draw_order_threshold"), &SpineAnimationTrack::get_mix_draw_order_threshold);
+	ClassDB::bind_method(D_METHOD("set_attachment_threshold", "attachment_threshold"), &SpineAnimationTrack::set_attachment_threshold);
+	ClassDB::bind_method(D_METHOD("get_attachment_threshold"), &SpineAnimationTrack::get_attachment_threshold);
+	ClassDB::bind_method(D_METHOD("set_draw_order_threshold", "draw_order_threshold"), &SpineAnimationTrack::set_draw_order_threshold);
+	ClassDB::bind_method(D_METHOD("get_draw_order_threshold"), &SpineAnimationTrack::get_draw_order_threshold);
 	ClassDB::bind_method(D_METHOD("set_mix_blend", "mix_blend"), &SpineAnimationTrack::set_mix_blend);
 	ClassDB::bind_method(D_METHOD("get_mix_blend"), &SpineAnimationTrack::get_mix_blend);
 	ClassDB::bind_method(D_METHOD("set_blend_tree_mode", "blend_tree_mode_enabled"), &SpineAnimationTrack::set_blend_tree_mode);
@@ -89,11 +87,10 @@ void SpineAnimationTrack::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(VARIANT_FLOAT, "mix_duration"), "set_mix_duration", "get_mix_duration");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "hold_previous"), "set_hold_previous", "get_hold_previous");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "reverse"), "set_reverse", "get_reverse");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "shortest_rotation"), "set_shortest_rotation", "get_shortest_rotation");
 	ADD_PROPERTY(PropertyInfo(Variant::VARIANT_FLOAT, "time_scale"), "set_time_scale", "get_time_scale");
 	ADD_PROPERTY(PropertyInfo(Variant::VARIANT_FLOAT, "alpha"), "set_alpha", "get_alpha");
-	ADD_PROPERTY(PropertyInfo(Variant::VARIANT_FLOAT, "attachment_threshold"), "set_mix_attachment_threshold", "get_mix_attachment_threshold");
-	ADD_PROPERTY(PropertyInfo(Variant::VARIANT_FLOAT, "draw_order_threshold"), "set_mix_draw_order_threshold", "get_mix_draw_order_threshold");
+	ADD_PROPERTY(PropertyInfo(Variant::VARIANT_FLOAT, "attachment_threshold"), "set_attachment_threshold", "get_attachment_threshold");
+	ADD_PROPERTY(PropertyInfo(Variant::VARIANT_FLOAT, "draw_order_threshold"), "set_draw_order_threshold", "get_draw_order_threshold");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "mix_blend", PROPERTY_HINT_ENUM, "Setup,First,Replace,Add"), "set_mix_blend", "get_mix_blend");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "blend_tree_mode"), "set_blend_tree_mode", "get_blend_tree_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "debug"), "set_debug", "get_debug");
@@ -105,11 +102,10 @@ SpineAnimationTrack::SpineAnimationTrack() : loop(false),
 											 mix_duration(-1),
 											 hold_previous(false),
 											 reverse(false),
-											 shortest_rotation(false),
-											 time_scale(1),
-											 alpha(1),
-											 mix_attachment_threshold(0),
-											 mix_draw_order_threshold(0),
+											 										 time_scale(1),
+											 										 alpha(1),
+											 										 attachment_threshold(0),
+											 										 draw_order_threshold(0),
 											 mix_blend(SpineConstant::MixBlend_Replace),
 											 blend_tree_mode(false),
 											 debug(false),
@@ -324,11 +320,10 @@ void SpineAnimationTrack::update_animation_state(const Variant &variant_sprite) 
 
 					entry->setHoldPrevious(hold_previous);
 					entry->setReverse(reverse);
-					entry->setShortestRotation(shortest_rotation);
 					entry->setTimeScale(time_scale);
 					entry->setAlpha(alpha);
-					entry->setMixAttachmentThreshold(mix_attachment_threshold);
-					entry->setMixDrawOrderThreshold(mix_draw_order_threshold);
+					entry->setAttachmentThreshold(attachment_threshold);
+					entry->setDrawOrderThreshold(draw_order_threshold);
 					entry->setMixBlend((spine::MixBlend) mix_blend);
 
 					if (debug) print_line(String("Setting animation {0} with mix_duration {1} on track {2} on {3}").format(varray(animation_name, mix_duration, track_index, sprite->get_name())).utf8().ptr());
@@ -430,10 +425,9 @@ void SpineAnimationTrack::update_animation_state(const Variant &variant_sprite) 
 
 		entry->setHoldPrevious(hold_previous);
 		entry->setReverse(reverse);
-		entry->setShortestRotation(shortest_rotation);
 		entry->setAlpha(alpha);
-		entry->setMixAttachmentThreshold(mix_attachment_threshold);
-		entry->setMixDrawOrderThreshold(mix_draw_order_threshold);
+		entry->setAttachmentThreshold(attachment_threshold);
+		entry->setDrawOrderThreshold(draw_order_threshold);
 		entry->setMixBlend((spine::MixBlend) mix_blend);
 #endif
 	} else {
@@ -456,11 +450,10 @@ void SpineAnimationTrack::update_animation_state(const Variant &variant_sprite) 
 
 					entry->setHoldPrevious(hold_previous);
 					entry->setReverse(reverse);
-					entry->setShortestRotation(shortest_rotation);
 					entry->setTimeScale(time_scale);
 					entry->setAlpha(alpha);
-					entry->setMixAttachmentThreshold(mix_attachment_threshold);
-					entry->setMixDrawOrderThreshold(mix_draw_order_threshold);
+					entry->setAttachmentThreshold(attachment_threshold);
+					entry->setDrawOrderThreshold(draw_order_threshold);
 					entry->setMixBlend((spine::MixBlend) mix_blend);
 
 					if (debug) print_line(String("Setting animation {0} with mix_duration {1} on track {2} on {3}").format(varray(animation_name, mix_duration, track_index, sprite->get_name())).utf8().ptr());
@@ -527,14 +520,6 @@ bool SpineAnimationTrack::get_reverse() {
 	return reverse;
 }
 
-void SpineAnimationTrack::set_shortest_rotation(bool _shortest_rotation) {
-	shortest_rotation = _shortest_rotation;
-}
-
-bool SpineAnimationTrack::get_shortest_rotation() {
-	return shortest_rotation;
-}
-
 void SpineAnimationTrack::set_time_scale(float _time_scale) {
 	time_scale = _time_scale;
 }
@@ -551,20 +536,20 @@ float SpineAnimationTrack::get_alpha() {
 	return alpha;
 }
 
-void SpineAnimationTrack::set_mix_attachment_threshold(float _mix_attachment_threshold) {
-	mix_attachment_threshold = _mix_attachment_threshold;
+void SpineAnimationTrack::set_attachment_threshold(float _attachment_threshold) {
+	attachment_threshold = _attachment_threshold;
 }
 
-float SpineAnimationTrack::get_mix_attachment_threshold() {
-	return mix_attachment_threshold;
+float SpineAnimationTrack::get_attachment_threshold() {
+	return attachment_threshold;
 }
 
-void SpineAnimationTrack::set_mix_draw_order_threshold(float _mix_draw_order_threshold) {
-	mix_draw_order_threshold = _mix_draw_order_threshold;
+void SpineAnimationTrack::set_draw_order_threshold(float _draw_order_threshold) {
+	draw_order_threshold = _draw_order_threshold;
 }
 
-float SpineAnimationTrack::get_mix_draw_order_threshold() {
-	return mix_draw_order_threshold;
+float SpineAnimationTrack::get_draw_order_threshold() {
+	return draw_order_threshold;
 }
 
 void SpineAnimationTrack::set_mix_blend(SpineConstant::MixBlend _blend) {

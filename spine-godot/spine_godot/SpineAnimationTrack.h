@@ -50,11 +50,10 @@ protected:
 	float mix_duration;
 	bool hold_previous;
 	bool reverse;
-	bool shortest_rotation;
 	float time_scale;
 	float alpha;
-	float mix_attachment_threshold;
-	float mix_draw_order_threshold;
+	float attachment_threshold;
+	float draw_order_threshold;
 	SpineConstant::MixBlend mix_blend;
 	bool blend_tree_mode;
 	bool debug;
@@ -104,10 +103,6 @@ public:
 
 	bool get_reverse();
 
-	void set_shortest_rotation(bool _shortest_rotation);
-
-	bool get_shortest_rotation();
-
 	void set_time_scale(float _time_scale);
 
 	float get_time_scale();
@@ -116,13 +111,13 @@ public:
 
 	float get_alpha();
 
-	void set_mix_attachment_threshold(float _mix_attachment_threshold);
+	void set_attachment_threshold(float _attachment_threshold);
 
-	float get_mix_attachment_threshold();
+	float get_attachment_threshold();
 
-	void set_mix_draw_order_threshold(float _mix_draw_order_threshold);
+	void set_draw_order_threshold(float _draw_order_threshold);
 
-	float get_mix_draw_order_threshold();
+	float get_draw_order_threshold();
 
 	void set_mix_blend(SpineConstant::MixBlend _blend);
 
